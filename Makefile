@@ -8,7 +8,7 @@ all:
 	$(CC) main.c -o $(BIN)/main $(CFLAGS) $(LIBS)
 
 test:
-	$(BIN)/main coord.txt
+	$(BIN)/main seeds/bar.txt
 
 clean:
 	rm -f $(BIN)/*
