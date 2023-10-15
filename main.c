@@ -7,6 +7,7 @@
 
 #define BUFFER_SIZE 1024
 #define CELL_CHARACTER 'o'
+#define SLEEP_TIME 100000
 
 const int neighbours[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1},
                               {0, 1},   {1, -1}, {1, 0},  {1, 1}};
@@ -109,7 +110,7 @@ int main(int argc, char **argv) {
       break;
     }
 
-    usleep(100000);
+    usleep(SLEEP_TIME);
   }
 
   endwin();
