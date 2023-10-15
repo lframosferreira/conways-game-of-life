@@ -1,1 +1,1 @@
-Implementation of COnway's game of liofe in ncurses
+Implementation of Conway's game of life in ncurses

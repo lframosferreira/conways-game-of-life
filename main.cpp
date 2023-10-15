@@ -7,18 +7,23 @@
 int main(int argc, char **argv){
     WINDOW *window;
     int number_of_cells = argc - 1; // coordinates are inputs form user so far
-    std::vector<std::pair<int, int>> cells_coord; 
-    for (int i = 1; i < argc; i++){
-        std::string c1 = strtok(argv[i], ",");
-        std::string c2 = strtok(NULL, ",");
-        cells_coord.push_back({std::stoi(c1), std::stoi(c2)});
+    int board[LINES][COLS];
+   
+    for (int i = 0;i < LINES; i++){
+        for(int j = 0; j < COLS; j++){
+            board[i][j] = 0;
+        }
     }
-    initscr();
 
-    for (auto e: cells_coord)
-    {
-        printw("%d,%d\n", e.first, e.second);
+
+    initscr();
+    printw("isso foi\n");
+    for (int i = 0; i < LINES;i++){
+        for (int j = 0; j < COLS;j++){
+            printw("%d\n", board[i][j]);
+        }
     }
+
     refresh();
     getch();
     endwin();
