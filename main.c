@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #define BUFFER_SIZE 1024
+#define CELL_CHARACTER 'o'
 
 const int neighbours[8][2] = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1},
                               {0, 1},   {1, -1}, {1, 0},  {1, 1}};
@@ -17,23 +18,9 @@ int main(int argc, char **argv) {
   curs_set(0);
   cbreak();
   noecho();
-  keypad(stdscr, TRUE);
   getmaxyx(stdscr, COLS, LINES);
-  mousemask(ALL_MOUSE_EVENTS, NULL);
-
-  MEVENT event;
-  char mousech;
-  while ((mousech = getch()) != 's') {
-    if (mousech == KEY_MOUSE) {
-      if (getmouse(&event) == OK) {
-        if (event.bstate & BUTTON1_PRESSED) {
-          printw("Left mouse button pressed at (%d, %d)", event.x,
-                   event.y);
-          refresh();
-        }
-      }
-    }
-  }
+  mousemask(BUTTON1_PRESSED | BUTTON3_PRESSED, NULL);
+  keypad(stdscr, TRUE);
 
   int board[LINES][COLS];
 
@@ -43,19 +30,23 @@ int main(int argc, char **argv) {
     }
   }
 
-  FILE *fp = fopen(argv[1], "r");
-  if (fp == NULL) {
-    perror("Error while opening input file\n");
-    exit(EXIT_FAILURE);
-  }
+  MEVENT event;
+  int mousech;
+  while ((mousech = getch()) != 's') {
+    if (mousech == KEY_MOUSE) {
+      if (getmouse(&event) == OK) {
 
-  char line_buffer[BUFFER_SIZE];
-  while (fgets(line_buffer, sizeof(line_buffer), fp) != NULL) {
-    int c0 = atoi(strtok(line_buffer, ","));
-    int c1 = atoi(strtok(NULL, ","));
-    board[c0][c1] = 1;
+        if (event.bstate & BUTTON1_PRESSED) {
+          board[event.x][event.y] = 1;
+          mvaddch(event.y, event.x, CELL_CHARACTER);
+        } else if (event.bstate & BUTTON3_PRESSED) {
+          board[event.x][event.y] = 0;
+          mvdelch(event.y, event.x);
+        }
+        refresh();
+      }
+    }
   }
-  fclose(fp);
 
   int new_board[LINES][COLS];
   for (int i = 0; i < LINES; i++) {
@@ -64,7 +55,7 @@ int main(int argc, char **argv) {
     }
   }
 
-  char ch;
+  int ch;
   for (;;) {
 
     clear();
@@ -74,7 +65,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i < LINES; i++) {
       for (int j = 0; j < COLS; j++) {
         if (board[i][j]) {
-          mvaddch(j, i, 'o');
+          mvaddch(j, i, CELL_CHARACTER);
         }
       }
     }
@@ -114,7 +105,7 @@ int main(int argc, char **argv) {
       }
     }
 
-    if ((ch = getch()) == 'q') { // tenho q apertas 'q' duas vzs, tem algo zuado
+    if ((ch = getch()) == 'q') {
       break;
     }
 
